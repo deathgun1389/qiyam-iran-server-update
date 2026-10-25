@@ -1,0 +1,26 @@
+# One command wss server on any VPS with a domain:  DOMAIN=qiyam.example.com docker compose up -d
+# Caddy gets and renews the HTTPS certificate by itself (ports 80 and 443 must be open and the domain must point to this server).
+services:
+  qiyam:
+    build: .
+    restart: always
+    environment:
+      DATA_DIR: /data
+    volumes:
+      - qiyam-data:/data
+  caddy:
+    image: caddy:2
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAIN: ${DOMAIN:?set DOMAIN, e.g. DOMAIN=qiyam.example.com}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+    depends_on:
+      - qiyam
+volumes:
+  qiyam-data:
+  caddy-data:

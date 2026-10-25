@@ -1,0 +1,16 @@
+# Render.com blueprint. A persistent disk needs a paid plan; on the free plan the world resets on every redeploy/sleep.
+services:
+  - type: web
+    name: qiyam-server
+    runtime: node
+    plan: starter
+    buildCommand: "echo no build"
+    startCommand: node server.js
+    healthCheckPath: /health
+    envVars:
+      - key: DATA_DIR
+        value: /data
+    disk:
+      name: qiyam-data
+      mountPath: /data
+      sizeGB: 1
